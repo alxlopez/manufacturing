@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <message id="activityEventOpened" name="activityEventOpened"></message>
+  <process id="mesManualOperationEventSolving" name="mesManualOperationEventSolving" isExecutable="true">
+    <userTask id="EventSolving" name="EventSolving" activiti:category="eventSolving">
+      <extensionElements>
+        <activiti:formProperty id="eventStatus" name="eventStatus" variable="eventStatus"></activiti:formProperty>
+        <activiti:formProperty id="comment" name="comment" variable="comment"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="EventSolving" targetRef="exclusivegateway1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow5" name="eventClosed" sourceRef="exclusivegateway1" targetRef="exclusivegateway2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${eventStatus =="CLOSED"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" name="eventOpened" sourceRef="exclusivegateway1" targetRef="EventSolving">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${eventStatus =="OPENED"}]]></conditionExpression>
+    </sequenceFlow>
+    <startEvent id="startevent1" name="Message start"></startEvent>
+    <serviceTask id="cmdRestartTask" name="cmdRestartTask" activiti:expression="${workflowNodeCommandService.cmdRestart(failuredNodeExecutionId)}"></serviceTask>
+    <sequenceFlow id="flow13" sourceRef="startevent1" targetRef="EventSolving"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow25" sourceRef="cmdRestartTask" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="setScheduledEntTime" name="setSchEndTime" activiti:delegateExpression="${setNewScheduledEndTime}"></serviceTask>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow26" name="new Endtime Set" sourceRef="exclusivegateway2" targetRef="setScheduledEntTime">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ scheduledEndTime!=null}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow27" sourceRef="setScheduledEntTime" targetRef="cmdRestartTask"></sequenceFlow>
+    <sequenceFlow id="flow28" name="no entime Set" sourceRef="exclusivegateway2" targetRef="cmdRestartTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ scheduledEndTime==null}]]></conditionExpression>
+    </sequenceFlow>
+    <dataObject id="scheduledEndTime" name="scheduledEndTime" itemSubjectRef="xsd:datetime"></dataObject>
+    <sequenceFlow id="flow29" name="eventAborted" sourceRef="exclusivegateway1" targetRef="abortParentNode">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${eventStatus =="ABORTED"}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="abortParentNode" name="abortParentNode" activiti:expression="${workflowNodeService.setArtifactVariableLocal(failuredNodeExecutionId,&quot;state&quot;, &quot;ABORTED&quot; )}"></serviceTask>
+    <sequenceFlow id="flow31" sourceRef="removeParentP" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="removeParentP" name="removeParentP" activiti:expression="${artifactEventSolvingService.cmdRemoveParentProcess(parentProcessId,&quot;eventSolving Aborted&quot;)}"></serviceTask>
+    <sequenceFlow id="flow32" sourceRef="abortParentNode" targetRef="removeParentP"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_mesManualOperationEventSolving">
+    <bpmndi:BPMNPlane bpmnElement="mesManualOperationEventSolving" id="BPMNPlane_mesManualOperationEventSolving">
+      <bpmndi:BPMNShape bpmnElement="EventSolving" id="BPMNShape_EventSolving">
+        <omgdc:Bounds height="55.0" width="105.0" x="80.0" y="78.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="200.0" y="85.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="88.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="cmdRestartTask" id="BPMNShape_cmdRestartTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="560.0" y="78.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="690.0" y="88.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="setScheduledEntTime" id="BPMNShape_setScheduledEntTime">
+        <omgdc:Bounds height="55.0" width="105.0" x="440.0" y="78.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="300.0" y="85.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="abortParentNode" id="BPMNShape_abortParentNode">
+        <omgdc:Bounds height="55.0" width="105.0" x="317.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="removeParentP" id="BPMNShape_removeParentP">
+        <omgdc:Bounds height="55.0" width="105.0" x="574.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="185.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="200.0" y="105.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="240.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="105.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="60.0" x="240.0" y="105.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="220.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="219.0" y="54.0"></omgdi:waypoint>
+        <omgdi:waypoint x="219.0" y="34.0"></omgdi:waypoint>
+        <omgdi:waypoint x="219.0" y="17.0"></omgdi:waypoint>
+        <omgdi:waypoint x="209.0" y="17.0"></omgdi:waypoint>
+        <omgdi:waypoint x="132.0" y="17.0"></omgdi:waypoint>
+        <omgdi:waypoint x="132.0" y="78.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="65.0" x="141.0" y="21.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="55.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="80.0" y="105.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="665.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="105.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="340.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="105.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="81.0" x="340.0" y="105.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="545.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="105.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="320.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="13.0"></omgdi:waypoint>
+        <omgdi:waypoint x="447.0" y="13.0"></omgdi:waypoint>
+        <omgdi:waypoint x="612.0" y="13.0"></omgdi:waypoint>
+        <omgdi:waypoint x="612.0" y="78.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="65.0" x="330.0" y="21.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="220.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="317.0" y="240.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="66.0" x="240.0" y="212.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="679.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="707.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="707.0" y="123.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="422.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="574.0" y="240.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

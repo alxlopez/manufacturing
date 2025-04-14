@@ -1,0 +1,23 @@
+package com.mes.modules.manufacturingEngine.workflowNodeArtifacts;
+
+import com.mes.modules.manufacturingEngine.stateMachines.workflowNodeStateMachine.WorkflowNodeStateMachine;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineAborting;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineHolding;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineInitiate;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineRestarting;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineRunning;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineStarting;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.routines.WorkflowNodeArtifactRoutineStopping;
+import com.mes.modules.manufacturingEngine.workflowNodeArtifacts.services.ArtifactService;
+
+public interface Artifact {
+	public ArtifactService getArtifactService();
+	public WorkflowNodeArtifactRoutineInitiate getInitiateRoutine();
+	public WorkflowNodeArtifactRoutineRunning getRunningRoutine();
+	public WorkflowNodeArtifactRoutineStarting getStartingRoutine();
+	public WorkflowNodeArtifactRoutineHolding getHoldingRoutine();
+	public WorkflowNodeArtifactRoutineRestarting getRestartingRoutine();
+	public WorkflowNodeArtifactRoutineStopping getStoppingRoutine();
+	public WorkflowNodeArtifactRoutineAborting getAbortingRoutine();
+	public WorkflowNodeStateMachine getStateMachine();
+}

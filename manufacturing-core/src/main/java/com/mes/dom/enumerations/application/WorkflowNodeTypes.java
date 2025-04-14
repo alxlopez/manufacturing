@@ -1,0 +1,15 @@
+package com.mes.dom.enumerations.application;
+
+public enum WorkflowNodeTypes {
+	PROCESS,
+	SUBPROCESS,
+	STARTING_POINT,
+	USER_TASK,
+	EQUIPMENT_PHASE,
+	SYSTEM_PHASE,
+	DECISION_ELEMENT, 
+	TRANSITION_CONDITION, 
+	END_POINT,
+	NOT_DEFINED,
+	TASK,
+}

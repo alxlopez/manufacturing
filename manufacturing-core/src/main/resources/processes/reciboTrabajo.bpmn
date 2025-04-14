@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.labmilanes.com">
+  <process id="reciboTrabajo" name="Recibo Trabajo" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="recogida" name="Recogida"></userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow5" sourceRef="recogida" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="pending" name="No recogido" sourceRef="exclusivegateway2" targetRef="recogida">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${collectStatus =="PENDING"}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="confirmarRecepcion" name="Confirmar Recepción"></userTask>
+    <sequenceFlow id="collected" name="Recogido" sourceRef="exclusivegateway2" targetRef="confirmarRecepcion">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${collectStatus =="COLLECTED"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="confirmarRecepcion" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="collectParam" name="CollectParam" activiti:delegateExpression="${collectInitialParametrization}"></serviceTask>
+    <sequenceFlow id="flow11" sourceRef="startevent1" targetRef="collectParam"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="collectParam" targetRef="recogida"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_reciboTrabajo">
+    <bpmndi:BPMNPlane bpmnElement="reciboTrabajo" id="BPMNPlane_reciboTrabajo">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="10.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="recogida" id="BPMNShape_recogida">
+        <omgdc:Bounds height="55.0" width="105.0" x="216.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="626.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="366.0" y="48.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="confirmarRecepcion" id="BPMNShape_confirmarRecepcion">
+        <omgdc:Bounds height="55.0" width="105.0" x="466.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="collectParam" id="BPMNShape_collectParam">
+        <omgdc:Bounds height="55.0" width="105.0" x="80.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="321.0" y="67.0"></omgdi:waypoint>
+        <omgdi:waypoint x="366.0" y="68.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="pending" id="BPMNEdge_pending">
+        <omgdi:waypoint x="386.0" y="48.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.0" y="7.0"></omgdi:waypoint>
+        <omgdi:waypoint x="268.0" y="7.0"></omgdi:waypoint>
+        <omgdi:waypoint x="268.0" y="40.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="287.0" y="11.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="collected" id="BPMNEdge_collected">
+        <omgdi:waypoint x="406.0" y="68.0"></omgdi:waypoint>
+        <omgdi:waypoint x="466.0" y="67.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="406.0" y="68.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="571.0" y="67.0"></omgdi:waypoint>
+        <omgdi:waypoint x="626.0" y="67.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="45.0" y="67.0"></omgdi:waypoint>
+        <omgdi:waypoint x="80.0" y="67.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="185.0" y="67.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="67.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

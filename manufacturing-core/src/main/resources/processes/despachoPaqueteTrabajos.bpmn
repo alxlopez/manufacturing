@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="despachoPaqueteTrabajos" name="despachoPaqueteTrabajos" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" delegateExpression="${setArtifactExecutionListener}">
+        <activiti:field name="artifact">
+          <activiti:string><![CDATA[orchestratorProcess]]></activiti:string>
+        </activiti:field>
+      </activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="despacho" name="despacho">
+      <extensionElements>
+        <activiti:executionListener event="start" delegateExpression="${setArtifactExecutionListener}">
+          <activiti:field name="artifact">
+            <activiti:string><![CDATA[orchestationUserTask]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="despachoParam"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow2" sourceRef="despacho" targetRef="exclusivegateway1"></sequenceFlow>
+    <userTask id="entregaLocal" name="entregaLocal">
+      <extensionElements>
+        <activiti:executionListener event="start" delegateExpression="${setArtifactExecutionListener}">
+          <activiti:field name="artifact">
+            <activiti:string><![CDATA[orchestationUserTask]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="conEntregaLocal" name="conEntregaLocal" sourceRef="exclusivegateway1" targetRef="entregaLocal">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${localDelivery=="INCLUDED"}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="entregaLocal" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="sinEntregaLocal" name="sinEntregaLocal" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${localDelivery=="NOT_INCLUDED"}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="despachoParam" name="DespachoParam" activiti:delegateExpression="${dispatchInitialParametrization}"></serviceTask>
+    <sequenceFlow id="flow5" sourceRef="despachoParam" targetRef="despacho"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="delivered" name="Delivered" sourceRef="exclusivegateway2" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deliveryStatus=="DELIVERED"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="pending" name="Pending" sourceRef="exclusivegateway2" targetRef="entregaLocal">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deliveryStatus=="PENDING"}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_despachoPaqueteTrabajos">
+    <bpmndi:BPMNPlane bpmnElement="despachoPaqueteTrabajos" id="BPMNPlane_despachoPaqueteTrabajos">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="33.0" y="35.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="despacho" id="BPMNShape_despacho">
+        <omgdc:Bounds height="55.0" width="105.0" x="212.0" y="25.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="352.0" y="32.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="entregaLocal" id="BPMNShape_entregaLocal">
+        <omgdc:Bounds height="55.0" width="105.0" x="502.0" y="25.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="635.0" y="102.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="despachoParam" id="BPMNShape_despachoParam">
+        <omgdc:Bounds height="55.0" width="105.0" x="92.0" y="25.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="632.0" y="32.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="68.0" y="52.0"></omgdi:waypoint>
+        <omgdi:waypoint x="92.0" y="52.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="317.0" y="52.0"></omgdi:waypoint>
+        <omgdi:waypoint x="352.0" y="52.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="conEntregaLocal" id="BPMNEdge_conEntregaLocal">
+        <omgdi:waypoint x="392.0" y="52.0"></omgdi:waypoint>
+        <omgdi:waypoint x="502.0" y="52.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="81.0" x="392.0" y="52.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="607.0" y="52.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="52.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sinEntregaLocal" id="BPMNEdge_sinEntregaLocal">
+        <omgdi:waypoint x="372.0" y="72.0"></omgdi:waypoint>
+        <omgdi:waypoint x="372.0" y="163.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="163.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="137.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="416.0" y="148.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="197.0" y="52.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="52.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="delivered" id="BPMNEdge_delivered">
+        <omgdi:waypoint x="652.0" y="72.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="102.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="652.0" y="78.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="pending" id="BPMNEdge_pending">
+        <omgdi:waypoint x="652.0" y="32.0"></omgdi:waypoint>
+        <omgdi:waypoint x="651.0" y="-1.0"></omgdi:waypoint>
+        <omgdi:waypoint x="554.0" y="-1.0"></omgdi:waypoint>
+        <omgdi:waypoint x="554.0" y="25.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="653.0" y="13.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
