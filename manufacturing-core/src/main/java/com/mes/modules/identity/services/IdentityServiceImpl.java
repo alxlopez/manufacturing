@@ -36,7 +36,7 @@ public class IdentityServiceImpl implements IdentityService{
 	private JSONObject getQueryGraph(URL url, String accessToken) throws IOException, JSONException {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         //conn.setRequestProperty("api-version", apiVersion);
-		System.out.println("token: "+accessToken);
+		//System.out.println("token: "+accessToken);
 		conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", "Bearer "+accessToken);
         //conn.setRequestProperty("Accept", "application/json;odata=minimalmetadata");
@@ -60,6 +60,7 @@ public class IdentityServiceImpl implements IdentityService{
             JSONObject thisUserJSONObject = users.optJSONObject(i);
             user = new User();
             JSONHelper.convertJSONObjectToDirectoryObject(thisUserJSONObject, user);
+            user.setObjectId(thisUserJSONObject.getString("id"));
             userList.add(user);
         }
         return userList;
@@ -74,6 +75,7 @@ public class IdentityServiceImpl implements IdentityService{
         jsonObject = JSONHelper.fetchDirectoryObjectJSONObject(response);
         User user = new User();
         JSONHelper.convertJSONObjectToDirectoryObject(jsonObject, user);
+        user.setObjectId(jsonObject.getString("id"));
         return user;
     }
     
@@ -90,6 +92,7 @@ public class IdentityServiceImpl implements IdentityService{
             JSONObject thisUserJSONObject = groups.optJSONObject(i);
             group = new Group();
             JSONHelper.convertJSONObjectToDirectoryObject(thisUserJSONObject, group);
+            group.setObjectId(thisUserJSONObject.getString("id"));
             groupList.add(group);
         }
         return groupList;
@@ -108,6 +111,7 @@ public class IdentityServiceImpl implements IdentityService{
             JSONObject thisUserJSONObject = groups.optJSONObject(i);
             group = new Group();
             JSONHelper.convertJSONObjectToDirectoryObject(thisUserJSONObject, group);
+            group.setObjectId(thisUserJSONObject.getString("id"));
             groupList.add(group);
         }
         return groupList;
@@ -122,6 +126,7 @@ public class IdentityServiceImpl implements IdentityService{
         jsonObject = JSONHelper.fetchDirectoryObjectJSONObject(response);
         Group group = new Group();
         JSONHelper.convertJSONObjectToDirectoryObject(jsonObject, group);
+        group.setObjectId(jsonObject.getString("id"));
         return group;
     }
     
@@ -138,6 +143,7 @@ public class IdentityServiceImpl implements IdentityService{
             JSONObject thisUserJSONObject = users.optJSONObject(i);
             user = new User();
             JSONHelper.convertJSONObjectToDirectoryObject(thisUserJSONObject, user);
+            user.setObjectId(thisUserJSONObject.getString("id"));
             userList.add(user);
         }
         return userList;
@@ -160,6 +166,7 @@ public class IdentityServiceImpl implements IdentityService{
             JSONObject thisUserJSONObject = users.optJSONObject(i);
             user = new User();
             JSONHelper.convertJSONObjectToDirectoryObject(thisUserJSONObject, user);
+            user.setObjectId(thisUserJSONObject.getString("id"));
             userList.add(user);
         }
         return userList;
